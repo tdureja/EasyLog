@@ -91,15 +91,14 @@ struct ExerciseDetailView: View{
             }
             
             Button("Add Set"){
-                let setId = sets.count + 1
-                sets.append(SetEntry(id: setId, weight: 0, reps: 0))
+                sets.append(SetEntry(id: UUID(), weight: 0, reps: 0))
             }
         }
     }
 }
 
 struct SetEntry{
-    let id: Int
+    let id: UUID
     let weight: Double
     let reps: Int
 }
