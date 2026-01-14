@@ -29,7 +29,7 @@ struct ContentView: View {
                 .tabItem{
                     Text("Workout")
                 }
-            CalendarView()
+            CalendarView(savedWorkouts: savedWorkouts)
                 .tabItem{
                     Text("Calendar")
                 }
@@ -115,7 +115,15 @@ struct ActiveWorkoutView: View{
             }
             
             Button("End Workout"){
-                savedWorkouts.append(Workout(id: UUID(), workoutDate: Date(), category: "Uncategorized", exercises: exercises))
+                if let index = savedWorkouts.firstIndex(where: { workout in
+                    Calendar.current.isDateInToday(workout.workoutDate)
+                }){
+                    // replace workout
+                    savedWorkouts[index] = Workout(id: savedWorkouts[index].id, workoutDate: savedWorkouts[index].workoutDate, category: savedWorkouts[index].category, exercises: exercises)
+                } else {
+                    //append workout
+                    savedWorkouts.append(Workout(id: UUID(), workoutDate: Date(), category: "Uncategorized", exercises: exercises))
+                }
                 dismiss()
                 print(savedWorkouts.count)
             }
@@ -171,22 +179,22 @@ struct ExerciseDetailView: View{
                         
                         Spacer()
                         
+                        TextField("0", value: set.reps, format: .number)
+                            .keyboardType(.numberPad)
+                            .frame(width:30)
+                        
+                        Text("x")
+                            .foregroundColor(.secondary)
+                        
                         HStack(spacing: 4){
                             TextField("0", value: set.weight, format: .number)
                                 .keyboardType(.decimalPad)
-                                .frame(width: 50)
+                                .frame(width: 40)
                             Text(exercise.unit.rawValue)
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                         
-                        Text("x")
-                            .foregroundColor(.secondary)
-                        
-                        
-                        TextField("0", value: set.reps, format: .number)
-                            .keyboardType(.numberPad)
-                            .frame(width:50)
                     }
                 }
                 .onDelete{ offsets in
@@ -216,11 +224,48 @@ struct SetDetailView: View{
 }
 
 struct CalendarView: View{
+    let savedWorkouts: [Workout]
+    
     var body: some View{
-        Text("Calendar")
+        VStack{
+            Text("Workout History")
+            
+            NavigationStack{
+                List{
+                    ForEach(savedWorkouts){ workout in
+                        NavigationLink{
+                            PastWorkoutView(workout: workout)
+                        } label: {
+                            Text(workout.workoutDate.description) // placeholder; use date formatter later
+                        }
+                        
+                    }
+                }
+            }
+        }
         
     }
 }
+
+struct PastWorkoutView: View{
+    let workout: Workout
+    
+    var body: some View{
+        
+        VStack{
+            Text(workout.workoutDate.description)
+            Text(workout.category)
+            ForEach(workout.exercises){ exercise in
+                Text(exercise.name)
+                ForEach(exercise.sets){ set in
+                    Text("\(set.reps) reps x \(set.weight) \(exercise.unit)")
+                }
+            }
+        }
+    }
+        
+}
+
 
 struct MotivationView: View{
     var body: some View{
