@@ -11,7 +11,8 @@ import Foundation
 
 struct ContentView: View {
     @State var savedWorkouts: [Workout] = []
-    @State var savedCateogries: [String] = []
+    @State var savedCategories: [String] = []
+
     
     init(){
         if let data = UserDefaults.standard.data(forKey: "SavedData"){
@@ -26,7 +27,7 @@ struct ContentView: View {
 
     var body: some View {
         TabView{
-            WorkoutView(savedWorkouts: $savedWorkouts)
+            WorkoutView(savedWorkouts: $savedWorkouts, savedCategories: $savedCategories)
                 .tabItem{
                     Text("Workout")
                 }

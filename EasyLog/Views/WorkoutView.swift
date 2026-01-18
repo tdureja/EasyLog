@@ -10,6 +10,9 @@ import SwiftUI
 
 struct WorkoutView: View{
     @Binding var savedWorkouts: [Workout]
+    @Binding var savedCategories: [String]
+    @State var selectedCategory: String? = nil
+    @State var isStartingWorkout: Bool = false
     
     var body: some View{
         NavigationStack(){
@@ -25,7 +28,12 @@ struct WorkoutView: View{
                         }
                         
                         NavigationLink{
-                            ActiveWorkoutView(savedWorkouts: $savedWorkouts, exercises: lastWorkout.exercises)
+                            ActiveWorkoutView(
+                                              savedWorkouts: $savedWorkouts,
+                                              selectedCategory: .constant(lastWorkout.category),
+                                              isStartingWorkout: .constant(false),
+                                              exercises: lastWorkout.exercises
+                            )
                         } label: {
                             Text("Edit Workout")
                                 .padding()
@@ -36,8 +44,8 @@ struct WorkoutView: View{
                     }
                     
                 } else {
-                    NavigationLink{
-                        ActiveWorkoutView(savedWorkouts: $savedWorkouts, exercises: [])
+                    Button {
+                        isStartingWorkout = true
                     } label: {
                         Text("Start Workout")
                             .padding()
@@ -45,7 +53,18 @@ struct WorkoutView: View{
                             .foregroundColor(.white)
                             .cornerRadius(8)
                     }
-                    .buttonStyle(PlainButtonStyle())
+                }
+            }
+            .navigationDestination(isPresented: $isStartingWorkout){
+                if selectedCategory == nil{
+                    CategorySelectionView(selectedCategory: $selectedCategory, savedCategories: $savedCategories)
+                } else{
+                    ActiveWorkoutView(
+                        savedWorkouts: $savedWorkouts,
+                        selectedCategory: $selectedCategory,
+                        isStartingWorkout: $isStartingWorkout,
+                        exercises: []
+                        )
                 }
             }
         }

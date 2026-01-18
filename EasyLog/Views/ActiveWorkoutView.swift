@@ -10,7 +10,11 @@ struct ActiveWorkoutView: View{
     
     @Environment(\.dismiss) var dismiss
     @Binding var savedWorkouts: [Workout]
+    @Binding var selectedCategory: String?
+    @Binding var isStartingWorkout: Bool
+    
     @State var exercises: [Exercise]
+
 
     var body: some View{
         VStack{
@@ -38,8 +42,14 @@ struct ActiveWorkoutView: View{
                     savedWorkouts[index] = Workout(id: savedWorkouts[index].id, workoutDate: savedWorkouts[index].workoutDate, category: savedWorkouts[index].category, exercises: exercises)
                 } else {
                     //append workout
-                    savedWorkouts.append(Workout(id: UUID(), workoutDate: Date(), category: "Uncategorized", exercises: exercises))
+                    guard let category = selectedCategory else{
+                        return
+                    }
+                    savedWorkouts.append(Workout(id: UUID(), workoutDate: Date(), category: category, exercises: exercises))
+                    
                 }
+                selectedCategory = nil
+                isStartingWorkout = false
                 dismiss()
                 print(savedWorkouts.count)
             }
