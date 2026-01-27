@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CalendarView: View{
-    let savedWorkouts: [Workout]
+    @Binding var savedWorkouts: [Workout]
     
     var body: some View{
         VStack{
@@ -20,13 +20,28 @@ struct CalendarView: View{
                         NavigationLink{
                             PastWorkoutView(workout: workout)
                         } label: {
-                            Text(workout.workoutDate.description) // placeholder; use date formatter later
+                            VStack{
+                                Text(formatDate(workout.workoutDate))
+                                    .font(.title2)
+    //                                .bold()
+                                Text(workout.category)
+                                    .font(.title3)
+                                    .foregroundColor(.secondary)// placeholder; use date formatter later
+                            }
                         }
                         
                     }
+                    .onDelete { offsets in
+                        savedWorkouts.remove(atOffsets:offsets)
+                    }
+                    
                 }
             }
         }
         
     }
+}
+
+#Preview {
+    ContentView()
 }

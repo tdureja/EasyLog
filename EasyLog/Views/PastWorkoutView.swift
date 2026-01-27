@@ -13,7 +13,7 @@ struct PastWorkoutView: View{
     var body: some View{
         
         VStack{
-            Text(workout.workoutDate.description)
+            Text(formatDate(workout.workoutDate))
             Text(workout.category)
             ForEach(workout.exercises){ exercise in
                 Text(exercise.name)
@@ -25,3 +25,8 @@ struct PastWorkoutView: View{
     }
         
 }
+
+#Preview {
+    ContentView()
+}
+

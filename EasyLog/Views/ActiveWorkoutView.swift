@@ -27,6 +27,8 @@ struct ActiveWorkoutView: View{
                     Text(exercise.name)
                 }
             }
+            .onDelete{ offsets in
+                exercises.remove(atOffsets: offsets)}
         }
             
             Button("Add Exercise"){
@@ -55,4 +57,8 @@ struct ActiveWorkoutView: View{
             }
         }
     }
+}
+
+#Preview {
+    ContentView()
 }
