@@ -15,12 +15,37 @@ struct ContentView: View {
 
     
     init(){
-        if let data = UserDefaults.standard.data(forKey: "SavedData"){
+        
+        if let data = UserDefaults.standard.data(forKey: "AppData"), let decoded = try? JSONDecoder().decode(AppData.self, from: data){
+            
+            _savedWorkouts = State(initialValue: decoded.workouts)
+            _savedCategories = State(initialValue: decoded.categories)
+        } else {
+            let presets = ["Push", "Pull", "Legs", "Cardio", "Full Body", "Chest and Back", "Back and Biceps"]
+            
+            _savedWorkouts = State(initialValue: [])
+            _savedCategories = State(initialValue: presets)
+            
+            saveAppData() // to be created
+        }
+        
+        if let data = UserDefaults.standard.data(forKey: "AppData"){
             if let decoded = try? JSONDecoder().decode([Workout].self, from: data){
                 _savedWorkouts = State(initialValue: decoded)
             }
         } else {
             _savedWorkouts = State(initialValue: [])
+        }
+    }
+    
+    func saveAppData(){
+        let appData = AppData(
+            workouts: savedWorkouts,
+            categories: savedCategories
+        )
+        
+        if let encoded = try? JSONEncoder().encode(appData){
+            UserDefaults.standard.set(encoded, forKey: "AppData")
         }
     }
     
@@ -39,11 +64,15 @@ struct ContentView: View {
                 .tabItem{
                     Text("Motivation")
                 }
-        }
+        } // needs to use saveappdata call once saveappdata is created
         .onChange(of: savedWorkouts) {
-            if let encoded = try? JSONEncoder().encode(savedWorkouts){
-                UserDefaults.standard.set(encoded, forKey: "SavedData")
-            }
+            saveAppData()
+//            if let encoded = try? JSONEncoder().encode(savedWorkouts){
+//                UserDefaults.standard.set(encoded, forKey: "SavedData")
+//            }
+        }
+        .onChange(of: savedCategories){
+            saveAppData()
         }
     }
 }
@@ -54,6 +83,7 @@ func formatDate(_ date: Date) -> String {
     formatter.timeStyle = .none
     return formatter.string(from: date)
 }
+
 
 
 

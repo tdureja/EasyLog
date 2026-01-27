@@ -6,6 +6,7 @@
 //
 import SwiftUI
 
+
 struct ActiveWorkoutView: View{
     
     @Environment(\.dismiss) var dismiss

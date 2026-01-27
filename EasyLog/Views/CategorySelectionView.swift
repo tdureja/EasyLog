@@ -17,34 +17,44 @@ struct CategorySelectionView: View {
         
         VStack{
             Text("Please Select a Category for Your Workout")
+                .font(.headline)
+                .padding(.top)
             
-            ForEach(savedCategories, id: \.self){ category in
-                Button {
-                    selectedCategory = category
-                } label: {
-                    Text(category)
+            ScrollView{
+                VStack{
+                    ForEach(savedCategories, id: \.self){ category in
+                        Button {
+                            selectedCategory = category
+                        } label: {
+                            Text(category)
+                        }
+                    }
                 }
             }
             
-            TextField("New category", text: $newCategoryName)
-                .textFieldStyle(.roundedBorder)
-            
-            Button("Add & Continue"){
-                let clean = newCategoryName.trimmingCharacters(in: .whitespacesAndNewlines)
-                let final = clean.capitalized
+            VStack{
+                TextField("New category", text: $newCategoryName)
+                    .textFieldStyle(.roundedBorder)
                 
-                guard !final.isEmpty else { return}
-                guard !savedCategories.contains(where: { $0.lowercased() == final.lowercased()}) else {
+                Button("Add & Continue"){
+                    let clean = newCategoryName.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let final = clean.capitalized
+                    
+                    guard !final.isEmpty else { return}
+                    guard !savedCategories.contains(where: { $0.lowercased() == final.lowercased()}) else {
+                        selectedCategory = final
+                        return
+                    }
+                    
+                    savedCategories.append(final)
                     selectedCategory = final
-                    return
                 }
-                
-                savedCategories.append(final)
-                selectedCategory = final
+                .disabled(newCategoryName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
-            .disabled(newCategoryName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
         }
-        
-        
     }
+}
+
+#Preview {
+    ContentView()
 }
