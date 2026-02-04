@@ -20,6 +20,9 @@ struct ActiveWorkoutView: View{
     var body: some View{
         VStack{
             Text("Active Workout")
+            
+            Text(selectedCategory ?? "")
+                .font(.headline)
                 // id replaced later with real ids
             List{
                 ForEach($exercises){ $exercise in NavigationLink {
@@ -57,6 +60,7 @@ struct ActiveWorkoutView: View{
                 print(savedWorkouts.count)
             }
         }
+
     }
 }
 
