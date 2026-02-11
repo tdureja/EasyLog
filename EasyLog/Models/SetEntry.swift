@@ -12,3 +12,6 @@ struct SetEntry: Codable, Identifiable, Equatable{
     var weight: Double
     var reps: Int
 }
+
+
+

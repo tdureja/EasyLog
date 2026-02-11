@@ -15,12 +15,12 @@ struct PastWorkoutView: View{
         VStack{
             Text(formatDate(workout.workoutDate))
             Text(workout.category)
-            ForEach(workout.exercises){ exercise in
-                Text(exercise.name)
-                ForEach(exercise.sets){ set in
-                    Text("\(set.reps) reps x \(set.weight) \(exercise.unit)")
-                }
-            }
+//            ForEach(workout.exercises){ exercise in
+//                Text(exercise.name)
+//                ForEach(exercise.sets){ set in
+//                    Text("\(set.reps) reps x \(set.weight) \(exercise.unit)")
+//                }
+//            }
         }
     }
         

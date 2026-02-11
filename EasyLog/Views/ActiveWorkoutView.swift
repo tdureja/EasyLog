@@ -11,11 +11,16 @@ struct ActiveWorkoutView: View{
     
     @Environment(\.dismiss) var dismiss
     @Binding var savedWorkouts: [Workout]
+    @Binding var savedExerciseDefinitions: [ExerciseDefinition]
     @Binding var selectedCategory: String?
     @Binding var isStartingWorkout: Bool
     
-    @State var exercises: [Exercise]
-
+    @State private var isAddingExercise: Bool = false
+    @State private var selectedExercise: ExerciseDefinition? = nil
+    @State private var showDiscardAlert = false
+    @State var exercises: [WorkoutExercise]
+    
+    
 
     var body: some View{
         VStack{
@@ -24,21 +29,24 @@ struct ActiveWorkoutView: View{
             Text(selectedCategory ?? "")
                 .font(.headline)
                 // id replaced later with real ids
-            List{
-                ForEach($exercises){ $exercise in NavigationLink {
-                        ExerciseDetailView(exercise: $exercise)
-                } label: {
-                    Text(exercise.name)
+            ScrollView{
+                VStack{
+                    ForEach($exercises){ $exercise in
+                        NavigationLink{
+                            ExerciseDetailView(exercise: $exercise)
+                        } label: {
+                            Text(exercise.definition.name)
+                        }
+                    }
                 }
             }
-            .onDelete{ offsets in
-                exercises.remove(atOffsets: offsets)}
-        }
             
             Button("Add Exercise"){
-                let nextId = exercises.count + 1
-                exercises.append(Exercise(id: nextId, name: "Exercise \(nextId)", sets: []))
+                //TODO: add exercise logic
+                isAddingExercise = true
             }
+            
+            
             
             Button("End Workout"){
                 if let index = savedWorkouts.firstIndex(where: { workout in
@@ -60,10 +68,67 @@ struct ActiveWorkoutView: View{
                 print(savedWorkouts.count)
             }
         }
-
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading){
+                Button("Back"){
+                    showDiscardAlert = true
+                }
+            }
+        }
+        .alert("Discard Workout?", isPresented: $showDiscardAlert){
+            
+            Button("Cancel", role: .cancel){ }
+            Button("Discard", role: .destructive){
+                exercises.removeAll()
+                selectedCategory = nil
+                isStartingWorkout = false
+                dismiss()
+            }
+        }
+        .navigationDestination(isPresented: $isAddingExercise){
+            ExerciseSelectionView(
+                selectedExercise: $selectedExercise,
+                savedExerciseDefinitions: $savedExerciseDefinitions
+            )
+        }
+        .onChange(of: selectedExercise){
+            
+            guard let definition = selectedExercise else { return }
+            
+            let alreadyExists = exercises.contains{
+                $0.definition.id == definition.id
+            }
+            
+            if !alreadyExists{
+                let newWorkoutExercise = WorkoutExercise(
+                    id: UUID(),
+                    definition: definition,
+                )
+                exercises.append(newWorkoutExercise)
+            }
+                        
+            selectedExercise = nil
+            isAddingExercise = false
+        }
     }
 }
+
 
 #Preview {
     ContentView()
 }
+
+
+//    .navigationDestination(isPresented: $isStartingWorkout){
+//        if selectedCategory == nil{
+//            CategorySelectionView(selectedCategory: $selectedCategory, savedCategories: $savedCategories)
+//        } else{
+//            ActiveWorkoutView(
+//                savedWorkouts: $savedWorkouts,
+//                selectedCategory: $selectedCategory,
+//                isStartingWorkout: $isStartingWorkout,
+//                exercises: []
+//                )
+//        }
+//    }

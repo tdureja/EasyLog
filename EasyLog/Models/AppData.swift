@@ -10,4 +10,5 @@ import Foundation
 struct AppData: Codable {
     var workouts: [Workout]
     var categories: [String]
+    var exerciseDefinitions: [ExerciseDefinition]
 }

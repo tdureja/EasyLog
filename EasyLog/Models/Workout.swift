@@ -11,5 +11,5 @@ struct Workout: Codable, Identifiable, Equatable{
     var id: UUID
     var workoutDate: Date
     let category: String
-    let exercises: [Exercise]
+    let exercises: [WorkoutExercise]
 }

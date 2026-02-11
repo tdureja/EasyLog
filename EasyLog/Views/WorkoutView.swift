@@ -11,6 +11,8 @@ import SwiftUI
 struct WorkoutView: View{
     @Binding var savedWorkouts: [Workout]
     @Binding var savedCategories: [String]
+    @Binding var savedExerciseDefinitions: [ExerciseDefinition]
+    
     @State var selectedCategory: String? = nil
     @State var isStartingWorkout: Bool = false
     
@@ -22,14 +24,16 @@ struct WorkoutView: View{
                         Text("Today's Workout")
                             .font(.headline)
                         
-                        ForEach(lastWorkout.exercises){exercise in
-                            Text(exercise.name)
-                                .font(.subheadline)
-                        }
+                        // TODO: fix home screen exercise listing after coding add exercise flow
+//                        ForEach(lastWorkout.exercises){exercise in
+//                            Text(exercise.name)
+//                                .font(.subheadline)
+//                        }
                         
                         NavigationLink{
                             ActiveWorkoutView(
                                               savedWorkouts: $savedWorkouts,
+                                              savedExerciseDefinitions:      $savedExerciseDefinitions,
                                               selectedCategory: .constant(lastWorkout.category),
                                               isStartingWorkout: .constant(false),
                                               exercises: lastWorkout.exercises
@@ -61,6 +65,7 @@ struct WorkoutView: View{
                 } else{
                     ActiveWorkoutView(
                         savedWorkouts: $savedWorkouts,
+                        savedExerciseDefinitions: $savedExerciseDefinitions,
                         selectedCategory: $selectedCategory,
                         isStartingWorkout: $isStartingWorkout,
                         exercises: []

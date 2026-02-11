@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ExerciseDetailView: View{
-    @Binding var exercise: Exercise
+    @Binding var exercise: WorkoutExercise
 
     
     
