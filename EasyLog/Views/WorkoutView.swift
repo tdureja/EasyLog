@@ -7,6 +7,86 @@
 
 import SwiftUI
 
+struct HeaderSection: View{
+    
+    let savedWorkouts: [Workout]
+    
+    var body: some View{
+        
+        if let lastWorkout = savedWorkouts.last, Calendar.current.isDateInToday(lastWorkout.workoutDate){
+            Text("Good Work Today")
+                .font(.system(size: 34, weight: .bold))
+                .padding(.top)
+                .foregroundColor(Theme.textPrimary)
+        } else {
+            Text("Let's Train")
+                .font(.system(size: 34, weight: .bold))
+                .padding(.top)
+                .foregroundColor(Theme.textPrimary)
+        }
+    }
+}
+
+
+struct WorkoutActionSection: View{
+    
+    @Binding var savedWorkouts: [Workout]
+    @Binding var savedExerciseDefinitions: [ExerciseDefinition]
+    @Binding var isStartingWorkout: Bool
+    
+    var body: some View{
+        
+        if let lastWorkout = savedWorkouts.last, Calendar.current.isDateInToday(lastWorkout.workoutDate){
+            
+            VStack(){
+                                        
+                Text("Today's Workout")
+                    .font(.headline)
+                    .foregroundColor(Theme.textPrimary)
+                
+                ForEach(lastWorkout.exercises){ exercise in
+                    Text(exercise.definition.name)
+                }
+                .foregroundColor(Theme.textPrimary)
+                
+                NavigationLink{
+                    ActiveWorkoutView(
+                                      savedWorkouts: $savedWorkouts,
+                                      savedExerciseDefinitions:      $savedExerciseDefinitions,
+                                      selectedCategory: .constant(lastWorkout.category),
+                                      isStartingWorkout: .constant(false),
+                                      exercises: lastWorkout.exercises
+                    )
+                } label: {
+                    Text("Edit Workout")
+                        .font(.headline)
+                        .padding()
+                        .frame(maxWidth: 200)
+                        .background(Theme.accent)
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                }
+            }
+            .padding()
+            .background(Theme.card)
+            .cornerRadius(16)
+            
+        } else {
+            Button {
+                isStartingWorkout = true
+            } label: {
+                Text("Start Workout")
+                    .font(.headline)
+                    .padding()
+                    .frame(maxWidth: 200)
+                    .background(Theme.accent)
+                    .foregroundColor(.white)
+                    .cornerRadius(12)
+            }
+        }
+    }
+}
+
 
 struct WorkoutView: View{
     @Binding var savedWorkouts: [Workout]
@@ -18,48 +98,23 @@ struct WorkoutView: View{
     
     var body: some View{
         NavigationStack(){
-            VStack{
-                if let lastWorkout = savedWorkouts.last, Calendar.current.isDateInToday(lastWorkout.workoutDate){
-                    VStack(){
-                        Text("Today's Workout")
-                            .font(.headline)
-                        
-                        // TODO: fix home screen exercise listing after coding add exercise flow
-//                        ForEach(lastWorkout.exercises){exercise in
-//                            Text(exercise.name)
-//                                .font(.subheadline)
-//                        }
-                        
-                        NavigationLink{
-                            ActiveWorkoutView(
-                                              savedWorkouts: $savedWorkouts,
-                                              savedExerciseDefinitions:      $savedExerciseDefinitions,
-                                              selectedCategory: .constant(lastWorkout.category),
-                                              isStartingWorkout: .constant(false),
-                                              exercises: lastWorkout.exercises
-                            )
-                        } label: {
-                            Text("Edit Workout")
-                                .padding()
-                                .background(Color.gray)
-                                .foregroundColor(.white)
-                                .cornerRadius(8)
-                        }
-                    }
+            ZStack{
+                
+                Theme.bg.ignoresSafeArea(edges: .top)
+                
+                VStack{
                     
-                } else {
-                    Button {
-                        isStartingWorkout = true
-                    } label: {
-                        Text("Start Workout")
-                            .padding()
-                            .background(Color.gray)
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
-                    }
+                    HeaderSection(savedWorkouts: savedWorkouts)
+                    
+                    Spacer()
+                        .frame(height: 200)
+                    
+                    WorkoutActionSection(savedWorkouts: $savedWorkouts, savedExerciseDefinitions: $savedExerciseDefinitions, isStartingWorkout: $isStartingWorkout)
+                    
+                    Spacer()
+                    
                 }
-            }
-            .navigationDestination(isPresented: $isStartingWorkout){
+                .navigationDestination(isPresented: $isStartingWorkout){
                 if selectedCategory == nil{
                     CategorySelectionView(selectedCategory: $selectedCategory, savedCategories: $savedCategories)
                 } else{
@@ -72,6 +127,11 @@ struct WorkoutView: View{
                         )
                 }
             }
+            }
         }
     }
+}
+
+#Preview {
+    ContentView()
 }

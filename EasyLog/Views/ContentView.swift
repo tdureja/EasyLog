@@ -17,6 +17,15 @@ struct ContentView: View {
     
     init(){
         
+        UITabBar.appearance().backgroundColor = UIColor(
+                red: 60/255,
+                green: 60/255,
+                blue: 65/255,
+                alpha: 1
+            )
+        UITabBar.appearance().unselectedItemTintColor = UIColor.lightGray
+
+        
         if let data = UserDefaults.standard.data(forKey: "AppData"), let decoded = try? JSONDecoder().decode(AppData.self, from: data){
             
             _savedWorkouts = State(initialValue: decoded.workouts)
@@ -79,6 +88,8 @@ struct ContentView: View {
     
 
     var body: some View {
+
+        
         TabView{
             WorkoutView(savedWorkouts: $savedWorkouts, savedCategories: $savedCategories, savedExerciseDefinitions: $savedExerciseDefinitions)
                 .tabItem{
@@ -93,6 +104,7 @@ struct ContentView: View {
                     Text("Motivation")
                 }
         } // needs to use saveappdata call once saveappdata is created
+        .tint(Theme.accent)
         .onChange(of: savedWorkouts) {
             saveAppData()
 //            if let encoded = try? JSONEncoder().encode(savedWorkouts){
