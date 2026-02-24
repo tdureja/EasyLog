@@ -17,12 +17,29 @@ struct ContentView: View {
     
     init(){
         
-        UITabBar.appearance().backgroundColor = UIColor(
+        let appearance = UITabBarAppearance()
+        
+        appearance.configureWithOpaqueBackground()
+        
+        appearance.backgroundColor = UIColor(
                 red: 60/255,
                 green: 60/255,
                 blue: 65/255,
                 alpha: 1
             )
+        
+        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [
+            .font: UIFont.systemFont(ofSize: 16)
+        ]
+        
+        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [
+            .font: UIFont.boldSystemFont(ofSize: 18)
+        ]
+        
+        UITabBar.appearance().standardAppearance = appearance
+        UITabBar.appearance().scrollEdgeAppearance = appearance
+        
+        UITabBar.appearance().tintColor = UIColor.white
         UITabBar.appearance().unselectedItemTintColor = UIColor.lightGray
 
         
