@@ -8,7 +8,9 @@ import org.hibernate.annotations.UuidGenerator;
 
 
 @Entity
-public class Workout {
+public class
+
+Workout {
     @Id
     @GeneratedValue()
     @UuidGenerator
