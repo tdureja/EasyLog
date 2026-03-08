@@ -13,3 +13,4 @@ struct ExerciseDefinition: Codable, Identifiable, Equatable, Hashable{
     var categories: [String] = []
 }
 
+ 
