@@ -1,5 +1,6 @@
 package com.easylog.easylog_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -20,6 +21,7 @@ public class Set {
     private double weight;
 
     @ManyToOne
+    @JsonIgnore
     private ExerciseInstance exerciseInstance;
 
     public Set(){}
@@ -51,5 +53,6 @@ public class Set {
     public void setWeight(double weight){
         this.weight = weight;
     }
+
 
 }

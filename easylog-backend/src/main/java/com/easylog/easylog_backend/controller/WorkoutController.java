@@ -39,6 +39,10 @@ public class WorkoutController {
 
     @DeleteMapping("/{id}")
     public void deleteWorkout(@PathVariable UUID id){
+        if (!workoutRepository.existsById(id)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Workout not found");
+        }
+
         workoutRepository.deleteById(id);
     }
 

@@ -3,7 +3,6 @@ package com.easylog.easylog_backend.controller;
 
 import com.easylog.easylog_backend.model.Exercise;
 import com.easylog.easylog_backend.repository.ExerciseRepository;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;

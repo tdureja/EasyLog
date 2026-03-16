@@ -1,5 +1,6 @@
 package com.easylog.easylog_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -16,6 +17,7 @@ public class ExerciseInstance{
     private UUID id;
 
     @ManyToOne
+    @JsonIgnore
     private Workout workout;
 
     @ManyToOne
@@ -24,7 +26,7 @@ public class ExerciseInstance{
     @Enumerated(EnumType.STRING)
     private WeightUnit unit;
 
-    @OneToMany(mappedBy = "exerciseInstance")
+    @OneToMany(mappedBy = "exerciseInstance", cascade = CascadeType.ALL)
     private List<Set> sets = new ArrayList<>(); // need to create Set
 
     public ExerciseInstance(){}
